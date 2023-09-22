@@ -4,13 +4,16 @@ const Post = require('../models/Post')
 
 
 router.get('/', function (req, res) {
+    
+    console.log(req.session)
     res.render('site/index');
+   
 });
 
-router.get('/about', function (req, res) {
-    res.render('site/about');
+// router.get('/admin', function (req, res) {
+//     res.render('admin/index');
     
-});
+// });
 
 router.get('/blog', function (req, res) {
      Post.find({}).lean().then(post=> {

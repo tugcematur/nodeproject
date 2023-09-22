@@ -9,7 +9,12 @@ router.get('/register',(req,res)=>{
 
 router.post('/register',(req,res)=>{
     User.create(req.body).then((error,user)=>{
-        res.redirect('/')
+
+        req.session.sessionFlash ={
+            type:'alert alert-danger',
+            message:'Kullanıcı başarıyla oluşturuldu'
+        }
+        res.redirect('/users/login')
         console.log(req.body)
     })
   //  res.render('site/register')
@@ -23,26 +28,34 @@ router.post('/login',(req,res)=>{
 
     const {email,password} = req.body
     User.findOne({email} )
-    // .then((error,user)=>{
-    //     if(user){
-    //         if(user.password == password)
-    //         {
-    //             //USER SESSION
-    //             res.redirect('/')
-    //         }
+    .then((user,error)=>{
+        if(user){
+            if(user.password == password)
+            {
+                //USER SESSION
+                req.session.userId = user._id
+                res.redirect('/')
+            }
 
-    //         else{
+            else{
                 
             
-    //             res.redirect('/users/login')
-    //         }
-    //     }
-    //     else{
+                res.redirect('/users/login')
+            }
+        }
+        else{
          
-    //         res.redirect('/users/register')
-    //         //console.log(user)
-    //     }
-    // })
+            res.redirect('/users/register')
+            
+        }
+    })
+})
+
+router.get('/logout',(req,res)=>{
+    req.session.destroy(()=>{
+        res.redirect('/')
+    })
+
 })
 
 module.exports = router
