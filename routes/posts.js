@@ -2,24 +2,31 @@ const express= require('express')
 const router = express.Router()
 const Post = require('../models/Post')
 const path =  require('path')
-
-
+const Category = require('../models/Category')
+const User = require('../models/User')
 
 
 router.get('/new',(req,res)=>{
-    if(req.session.userId)
+    if(!req.session.userId)
     {
-        return res.render('site/addpost')
+        res.redirect('/users/login')
     }
-  else
-     res.redirect('/users/login')
+  else{
+    Category.find({}).lean().then(category => {
+        res.render('site/addpost',{categories:category})
+    })
+  }
+    
 
    /* res.render('site/addpost')*/
 })
 
 router.get('/:id',(req,res)=>{
-    Post.findById(req.params.id).lean().then(p =>{
-        res.render('site/post',{post:p})
+    Post.findById(req.params.id).populate({path:'author', model:User}).lean().then(p =>{
+        Category.find({}).lean().then(category =>{
+            res.render('site/post',{post:p, categories:category})
+        })
+       
     })
    // console.log(req.params)
    // res.render('site/addpost')
@@ -33,7 +40,8 @@ router.post('/test',(req,res)=>{
    // Post.create(req.body)
    Post.create({
     ...req.body,
-    post_image: `/img/postimages/${post_image.name}`
+    post_image: `/img/postimages/${post_image.name}`,
+    author: req.session.userId
 
    })
 

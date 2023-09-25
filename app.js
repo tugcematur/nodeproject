@@ -3,15 +3,14 @@ const express = require('express')
 var exphbs = require('express-handlebars');
 const app = express()
 const port = 3000
-
 const hostname = '127.0.0.1'
-
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
 const generateDatee = require('./helpers/generateDate').generateDate
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo');
+const  methodOverride = require('method-override')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/nodeblogdb')
@@ -37,6 +36,7 @@ app.use(fileUpload())
 
 app.use(express.static('public')) //static  dosyalarımız public in içinde 
 
+app.use(methodOverride('_method'))
 
 
 app.engine('handlebars', exphbs({ helpers: { generateDate: generateDatee } }));
