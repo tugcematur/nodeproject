@@ -22,9 +22,29 @@ router.get('/new',(req,res)=>{
 })
 
 router.get('/:id',(req,res)=>{
-    Post.findById(req.params.id).populate({path:'author', model:User}).lean().then(p =>{
-        Category.find({}).lean().then(category =>{
-            res.render('site/post',{post:p, categories:category})
+    Post.findById(req.params.id).populate({path:'author', model:User}).lean().then(post =>{
+        Category.aggregate([
+            {
+                $lookup: {
+                    from: 'posts',//collection,tablo
+                    localField: '_id', //categories
+                    foreignField: 'category',
+                    as: 'posts'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    num_of_posts: { $size: '$posts' }
+                }
+            }
+        ]).then(category =>{
+            Post.find({}).populate({path:'author', model:User}).sort({$natural:-1}).lean().then(posts=> {
+
+                res.render('site/post',{post:post, categories:category,posts:posts})
+            })
+       
         })
        
     })
@@ -58,4 +78,47 @@ router.post('/test',(req,res)=>{
   console.log(req.files.post_image.name)
 })
 
+
+router.get('/category/:categoryId',(req,res) =>{
+ Post.find({category:req.params.categoryId}).populate({path:'category', model:Category}).sort({ $natural: -1 }).lean().populate({path:'author', model:User}).lean().then(posts =>{
+    Category.aggregate([
+        {
+            $lookup: {
+                from: 'posts',//collection,tablo
+                localField: '_id', //categories
+                foreignField: 'category',
+                as: 'posts'
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                name: 1,
+                num_of_posts: { $size: '$posts' }
+            }
+        }
+    ]).then(categories =>{
+         res.render('site/blog',{posts:posts,categories:categories})
+    })
+
+ })
+
+})
+
+
+
+
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+router.get("/search", function(req, res) {
+    if (req.query.look) {
+       const regex = new RegExp(escapeRegex(req.query.look), 'gi');
+       Post.find({ "title": regex }).populate({path:'author', model:User}).sort({$natural:-1}).lean().then(posts =>{ 
+      
+    
+    })
+    }
+})
 module.exports = router

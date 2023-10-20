@@ -7,3 +7,4 @@ const UserSchema = new mongoose.Schema({
 })
 
 module.exports =mongoose.model('User',UserSchema)
+//registerda username ve email kayıtlı olan tekrar save edilirse sayfa görüntülenemiyor hatasına düşüyor.

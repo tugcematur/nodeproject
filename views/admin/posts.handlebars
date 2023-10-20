@@ -15,47 +15,29 @@
         <div class="clearfix"></div>
         <div class="mb-5"></div>
         <div class="row">
-            <div class="col-md-4 ">
-                <form action="" method="POST" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class=" col-md-10">
-                            <div class="form-group">
-                                <input class="form-control" name="name" type="text" placeholder="Category Name*"
-                                    required="required" data-validation-required-message="Please enter category name.">
-                                <p class="help-block text-danger"></p>
-                            </div>
-
-
-
-                            <div class="clearfix"></div>
-
-                            <div id="success"></div>
-                            <button class="main-btn" type="submit" style="margin-left:0">Add Category</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-8 ">
+          
+            <div class="col-md-12 ">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>NAME</th>
+                            <th>TITLE</th>
+                            <th>CATEGORY NAME</th>
+                            <th>EDIT </th>
                             <th>DELETE</th>
                         </tr>
 
                     </thead>
                     <tbody>
-                        {{#each categories }}
+                        {{#each posts}}
                         <tr>
-                            <td>{{_id}}</td>
-                            <td>{{name}}</td>
-                            <td>
-                                <form action="/admin/categories/{{_id}}?_method=DELETE" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                            <td>{{title}}</td>
+                            <td>{{category.name}}</td>
+                            <td><a class="btn btn-warning" href="/admin/posts/edit/{{_id}}">EDIT</a></td>
+                            <td>  <form action="/admin/posts/{{_id}}?_method=DELETE" method="POST">
+                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-danger">DELETE</button>
-                                </form>
-                            </td>
+                                </form></td>
+                            
                         </tr>
                         {{/each}}
                     </tbody>
