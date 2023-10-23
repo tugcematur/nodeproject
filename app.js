@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 // const generateDate = require('./helpers/generateDate').generateDate
 // const limit = require('./helpers/limit').limit
 // const truncate = require('./helpers/truncate').truncate
-const {generateDate,limit,truncate} = require('./helpers/hbs')
+const {generateDate,limit,truncate/*,paginate*/} = require('./helpers/hbs')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo');
 const  methodOverride = require('method-override')
@@ -43,6 +43,8 @@ helpers:{
   generateDate: generateDate,
   limit:  limit,
   truncate: truncate
+  /*,
+  paginate: paginate*/
 }
    
 })

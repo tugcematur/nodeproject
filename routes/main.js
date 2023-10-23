@@ -17,6 +17,8 @@ router.get('/', function (req, res) {
 // });
 
 router.get('/blog', function (req, res) {
+
+    
     Post.find({}).populate({ path: 'author', model: User }).sort({ $natural: -1 }).lean().then(posts => {
         // Category.find({}).lean().then(category =>{
         //     res.render('site/blog',{posts:posts,categories:category})//?????
